@@ -37,7 +37,7 @@ jobs:
       - anchore/parse_reports
       - store_artifacts:
             path: anchore-reports
-  do_something:
+  do_something_and_deploy:
     executor: py-executor
     steps:
       - attach_workspace:
@@ -53,6 +53,6 @@ workflows:
       - anchore_image_scan:
           requires:
             - checkout_code
-      - do_something:
+      - do_something_and_deploy:
           requires:
             - anchore_image_scan
