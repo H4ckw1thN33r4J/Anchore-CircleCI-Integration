@@ -43,7 +43,7 @@ More details on the anchore - circleCI  orb can be found here : https://circleci
 
 We are currently utilizing the ## 'analyze_local_image' function to scan the build image. 
 
-Example job definition: 
+### Sample job definition: 
 
 ```bash
 anchore_image_scan:
