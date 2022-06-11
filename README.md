@@ -36,6 +36,7 @@ checks for hardcoded Secrets , metadata (DockerFile misconfigurations.)
 We can integrate the Anchore engine Image scanning job before we push the image to the org private docker registry. We currently utilize the anchore-engine circleCI orb to achieve the task.
 For now, let the engine use default policy. you can also define a custom policy by dropping them in .circleci/.anchore/<policy.json>
 
+![Anti-Takeover](/screenshots/anchore_3.png)
 As we see from the above image, if the image scan job is failed ( does not pass the anchore policies defined by the user ) , workflow fails .
 
 More details on the anchore - circleCI  orb can be found here : https://circleci.com/developer/orbs/orb/anchore/anchore-engine
@@ -70,8 +71,9 @@ you can refer  the sample workflow with anchore image scan job integrated in thi
 
 We also persist the Anchore generated results as build artifacts for the review by the relevant team.(Build artifacts expire after 30 days.)
 ## Anchore Engine result artifacts snapshot : 
+![Anti-Takeover](/screenshots/anchore_4.png)
 
 ## Anchore-Engine Analysis snapshot:
-
+![Anti-Takeover](/screenshots/anchore_2.png)
 More on Anchore Engine : 
 https://anchore.com/blog/anchore-engine/
