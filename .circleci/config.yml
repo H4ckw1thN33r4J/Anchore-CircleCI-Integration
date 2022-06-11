@@ -1,0 +1,59 @@
+version: 2.1
+orbs:
+  anchore: anchore/anchore-engine@1.9.0
+executors:
+   py-executor:
+    docker:
+      - image: circleci/python:3.6
+    working_directory: ~/repo
+   anchore-executor:
+    docker:
+      - image: anchore/anchore_engine
+    working_directory: ~/repo
+    
+jobs:
+  checkout_code:
+    executor: py-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/workspace
+      - persist_to_workspace:
+          root: ~/workspace
+          paths: version
+          
+  anchore_image_scan:
+    executor: anchore/anchore_engine
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout
+      - run: |
+          docker build -t "test:anchore" .
+      - anchore/analyze_local_image:
+          image_name: test:anchore
+          timeout: '1000'
+          dockerfile_path: ./Dockerfile
+          policy_failure: True
+      - anchore/parse_reports
+      - store_artifacts:
+            path: anchore-reports
+  do_something:
+    executor: py-executor
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - run: |
+          ls
+        
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - checkout_code
+      - anchore_image_scan:
+          requires:
+            - checkout_code
+      - do_something
