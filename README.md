@@ -66,6 +66,8 @@ This function will run anchore scans against a locally built image which gets pu
 
 We also has an option to control the job failure status with 'policy_failure' option. If set to True, Workflow halts when the container image violates user defined policy. 
 
+you can refer to the sample workflow with anchore image scan job integrated in this repo :(.circkeci/config.yaml) https://github.com/strikergoutham/Anchore-CircleCI-Integration/blob/main/.circleci/config.yml
+
 We also persist the Anchore generated results as build artifacts for the review by the relevant team.(Build artifacts expire after 30 days.)
 ## Anchore Engine result artifacts snapshot : 
 
