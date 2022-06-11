@@ -54,3 +54,5 @@ workflows:
           requires:
             - checkout_code
       - do_something
+          requires:
+            - anchore_image_scan
