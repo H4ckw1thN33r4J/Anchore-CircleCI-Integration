@@ -33,3 +33,43 @@ checks for hardcoded Secrets , metadata (DockerFile misconfigurations.)
 
 ## How do we Integrate it to our existing CircleCI CD ?
 
+We can integrate the Anchore engine Image scanning job before we push the image to the org private docker registry. We currently utilize the anchore-engine circleCI orb to achieve the task.
+For now, let the engine use default policy. you can also define a custom policy by dropping them in .circleci/.anchore/<policy.json>
+
+As we see from the above image, if the image scan job is failed ( does not pass the anchore policies defined by the user ) , workflow fails .
+
+More details on the anchore - circleCI  orb can be found here : https://circleci.com/developer/orbs/orb/anchore/anchore-engine
+
+We are currently utilizing the ## 'analyze_local_image' function to scan the build image. 
+
+Example job definition: 
+
+```bash
+anchore_image_scan:
+    executor: anchore/anchore_engine
+    steps:
+      - checkout
+      - run: |
+          docker build -t "test:anchore" .
+      - anchore/analyze_local_image:
+          image_name: test:anchore
+          timeout: '1000'
+          dockerfile_path: ./Dockerfile
+          policy_failure: True
+      - anchore/parse_reports
+      - store_artifacts:
+            path: anchore-reports
+```
+
+This function will run anchore scans against a locally built image which gets pushed to private repo / gets deployed later in the workflow.
+
+
+We also has an option to control the job failure status with 'policy_failure' option. If set to True, Workflow halts when the container image violates user defined policy. 
+
+We also persist the Anchore generated results as build artifacts for the review by the relevant team.(Build artifacts expire after 30 days.)
+## Anchore Engine result artifacts snapshot : 
+
+## Anchore-Engine Analysis snapshot:
+
+More on Anchore Engine : 
+https://anchore.com/blog/anchore-engine/
